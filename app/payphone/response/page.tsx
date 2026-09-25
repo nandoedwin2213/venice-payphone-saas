@@ -17,7 +17,13 @@ export default async function PayphoneResponsePage({
 }: PayphoneResponsePageProps) {
   const { id, clientTransactionId, cancelled } = searchParams
 
-  if (cancelled || !id || !clientTransactionId) {
+  if (cancelled || !id || id === "0" || !clientTransactionId) {
+    if (clientTransactionId) {
+      await db.payment.updateMany({
+        where: { clientTransactionId, status: "PENDING" },
+        data: { status: "CANCELLED" },
+      })
+    }
     redirect("/dashboard/billing?payment=cancelled")
   }
 
