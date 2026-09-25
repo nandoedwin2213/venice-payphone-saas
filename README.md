@@ -29,7 +29,8 @@ This project as an experiment to see how a modern app (with features like authen
 - Database on **PlanetScale**
 - UI Components built using **Radix UI**
 - Documentation and blog using **MDX** and **Contentlayer**
-- Subscriptions using **Stripe**
+- Subscriptions using **PayPhone**
+- Uncensored AI generation using **Venice.ai**
 - Styled using **Tailwind CSS**
 - Validations using **Zod**
 - Written in **TypeScript**
@@ -38,7 +39,7 @@ This project as an experiment to see how a modern app (with features like authen
 
 - [x] ~Add MDX support for basic pages~
 - [x] ~Build marketing pages~
-- [x] ~Subscriptions using Stripe~
+- [x] Subscriptions using PayPhone
 - [x] ~Responsive styles~
 - [x] ~Add OG image for blog using @vercel/og~
 - [x] Dark mode

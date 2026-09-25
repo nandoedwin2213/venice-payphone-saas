@@ -1,5 +1,3 @@
-// @ts-nocheck
-// TODO: Fix this when we turn strict mode on.
 import { UserSubscriptionPlan } from "types"
 import { freePlan, proPlan } from "@/config/subscriptions"
 import { db } from "@/lib/db"
@@ -12,10 +10,8 @@ export async function getUserSubscriptionPlan(
       id: userId,
     },
     select: {
-      stripeSubscriptionId: true,
-      stripeCurrentPeriodEnd: true,
-      stripeCustomerId: true,
-      stripePriceId: true,
+      isPro: true,
+      proUntil: true,
     },
   })
 
@@ -23,17 +19,15 @@ export async function getUserSubscriptionPlan(
     throw new Error("User not found")
   }
 
-  // Check if user is on a pro plan.
+  // A user is PRO while the flag is set and the paid period has not expired.
   const isPro =
-    user.stripePriceId &&
-    user.stripeCurrentPeriodEnd?.getTime() + 86_400_000 > Date.now()
+    user.isPro && (!user.proUntil || user.proUntil.getTime() > Date.now())
 
   const plan = isPro ? proPlan : freePlan
 
   return {
     ...plan,
-    ...user,
-    stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime(),
     isPro,
+    proUntil: user.proUntil?.getTime() ?? null,
   }
 }
