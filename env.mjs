@@ -16,7 +16,7 @@ export const env = createEnv({
     POSTMARK_SIGN_IN_TEMPLATE: z.string().min(1),
     POSTMARK_ACTIVATION_TEMPLATE: z.string().min(1),
     PAYPHONE_AUTH_TOKEN: z.string().min(1),
-    PAYPHONE_STORE_ID: z.string().min(1),
+    PAYPHONE_STORE_ID: z.string().optional(),
     VENICE_API_KEY: z.string().min(1),
     VENICE_MODEL: z.string().min(1).default("llama-3.3-70b"),
     VENICE_IMAGE_MODEL: z.string().min(1).default("fluently-xl"),

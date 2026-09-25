@@ -60,7 +60,7 @@ export async function preparePayphonePayment(
       currency: input.currency,
       clientTransactionId: input.clientTransactionId,
       reference: input.reference,
-      storeId: env.PAYPHONE_STORE_ID,
+      ...(env.PAYPHONE_STORE_ID ? { storeId: env.PAYPHONE_STORE_ID } : {}),
       responseUrl: absoluteUrl("/payphone/response"),
       cancellationUrl: absoluteUrl("/payphone/response?cancelled=true"),
     }),
