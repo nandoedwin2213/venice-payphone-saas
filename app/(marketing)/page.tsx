@@ -163,7 +163,7 @@ export default async function IndexPage() {
               <div className="space-y-2">
                 <h3 className="font-bold">Subscriptions</h3>
                 <p className="text-sm text-muted-foreground">
-                  Free and paid subscriptions using Stripe.
+                  Free and paid subscriptions using PayPhone.
                 </p>
               </div>
             </div>

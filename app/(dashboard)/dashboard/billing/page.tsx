@@ -2,16 +2,8 @@ import { redirect } from "next/navigation"
 
 import { authOptions } from "@/lib/auth"
 import { getCurrentUser } from "@/lib/session"
-import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { BillingForm } from "@/components/billing-form"
 import { DashboardHeader } from "@/components/header"
 import { Icons } from "@/components/icons"
@@ -22,7 +14,36 @@ export const metadata = {
   description: "Manage billing and your subscription plan.",
 }
 
-export default async function BillingPage() {
+const paymentMessages: Record<string, { title: string; description: string }> =
+  {
+    approved: {
+      title: "Payment approved",
+      description: "Your PRO plan is now active. Enjoy the AI generator!",
+    },
+    pending: {
+      title: "Payment pending",
+      description:
+        "PayPhone is still processing your payment. Refresh this page in a few minutes.",
+    },
+    rejected: {
+      title: "Payment rejected",
+      description: "PayPhone did not approve the payment. Please try again.",
+    },
+    cancelled: {
+      title: "Payment cancelled",
+      description: "You cancelled the payment. You can retry whenever you want.",
+    },
+    error: {
+      title: "Payment error",
+      description: "We could not verify the payment. Please contact support.",
+    },
+  }
+
+interface BillingPageProps {
+  searchParams: { payment?: string }
+}
+
+export default async function BillingPage({ searchParams }: BillingPageProps) {
   const user = await getCurrentUser()
 
   if (!user) {
@@ -30,15 +51,9 @@ export default async function BillingPage() {
   }
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
-
-  // If user has a pro plan, check cancel status on Stripe.
-  let isCanceled = false
-  if (subscriptionPlan.isPro && subscriptionPlan.stripeSubscriptionId) {
-    const stripePlan = await stripe.subscriptions.retrieve(
-      subscriptionPlan.stripeSubscriptionId
-    )
-    isCanceled = stripePlan.cancel_at_period_end
-  }
+  const message = searchParams.payment
+    ? paymentMessages[searchParams.payment]
+    : undefined
 
   return (
     <DashboardShell>
@@ -47,29 +62,18 @@ export default async function BillingPage() {
         text="Manage billing and your subscription plan."
       />
       <div className="grid gap-8">
-        <Alert className="!pl-14">
-          <Icons.warning />
-          <AlertTitle>This is a demo app.</AlertTitle>
-          <AlertDescription>
-            Taxonomy app is a demo app using a Stripe test environment. You can
-            find a list of test card numbers on the{" "}
-            <a
-              href="https://stripe.com/docs/testing#cards"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-8"
-            >
-              Stripe docs
-            </a>
-            .
-          </AlertDescription>
-        </Alert>
-        <BillingForm
-          subscriptionPlan={{
-            ...subscriptionPlan,
-            isCanceled,
-          }}
-        />
+        {message ? (
+          <Alert className="!pl-14">
+            {searchParams.payment === "approved" ? (
+              <Icons.check />
+            ) : (
+              <Icons.warning />
+            )}
+            <AlertTitle>{message.title}</AlertTitle>
+            <AlertDescription>{message.description}</AlertDescription>
+          </Alert>
+        ) : null}
+        <BillingForm subscriptionPlan={subscriptionPlan} />
       </div>
     </DashboardShell>
   )

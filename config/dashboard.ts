@@ -19,6 +19,11 @@ export const dashboardConfig: DashboardConfig = {
       icon: "post",
     },
     {
+      title: "AI Generator",
+      href: "/dashboard/generator",
+      icon: "media",
+    },
+    {
       title: "Billing",
       href: "/dashboard/billing",
       icon: "billing",
