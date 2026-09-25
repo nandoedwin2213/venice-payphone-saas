@@ -19,7 +19,7 @@ export const env = createEnv({
     PAYPHONE_STORE_ID: z.string().optional(),
     VENICE_API_KEY: z.string().min(1),
     VENICE_MODEL: z.string().min(1).default("llama-3.3-70b"),
-    VENICE_IMAGE_MODEL: z.string().min(1).default("fluently-xl"),
+    VENICE_IMAGE_MODEL: z.string().min(1).default("lustify-sdxl"),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().min(1),
